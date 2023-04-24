@@ -1,20 +1,20 @@
-use ash::vk;
-use nalgebra as na;
 use crate::camera::Camera;
-use crate::model::{Model, InstanceData};
+use crate::model::{InstanceData, Model};
 use crate::swapchain::Swapchain;
 use crate::vkinterface::VkInterface;
+use ash::vk;
+use nalgebra as na;
 
-mod camera;
 mod buffer;
-mod debug;
-mod model;
+mod camera;
 mod commandbuffers;
+mod debug;
+mod initialization;
+mod model;
 mod rendering;
 mod surface;
 mod swapchain;
 mod vkinterface;
-mod initialization;
 
 //to.dos show important notes of things that could be improved
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -27,19 +27,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     object.insert_visibly(InstanceData {
         modelmatrix: (na::Matrix4::new_translation(&na::Vector3::new(0.1, 0.2, 0.4))
             * na::Matrix4::new_scaling(0.01))
-            .into(),
+        .into(),
         colour: [0.0, 0.0, 1.0],
     });
     cube.insert_visibly(InstanceData {
         modelmatrix: (na::Matrix4::new_translation(&na::Vector3::new(0.0, 0.0, 0.1))
             * na::Matrix4::new_scaling(0.1))
-            .into(),
+        .into(),
         colour: [0.2, 0.4, 1.0],
     });
     cube.insert_visibly(InstanceData {
         modelmatrix: (na::Matrix4::new_translation(&na::Vector3::new(0.05, 0.05, 0.0))
             * na::Matrix4::new_scaling(0.1))
-            .into(),
+        .into(),
         colour: [1.0, 1.0, 0.2],
     });
     for i in 0..10 {
@@ -50,7 +50,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     j as f32 * 0.2 - 1.0,
                     0.5,
                 )) * na::Matrix4::new_scaling(0.03))
-                    .into(),
+                .into(),
                 colour: [1.0, i as f32 * 0.07, j as f32 * 0.07],
             });
             cube.insert_visibly(InstanceData {
@@ -59,7 +59,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     0.0,
                     j as f32 * 0.2 - 1.0,
                 )) * na::Matrix4::new_scaling(0.02))
-                    .into(),
+                .into(),
                 colour: [i as f32 * 0.07, j as f32 * 0.07, 1.0],
             });
         }
@@ -68,25 +68,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         modelmatrix: (na::Matrix4::from_scaled_axis(na::Vector3::new(0.0, 0.0, 1.4))
             * na::Matrix4::new_translation(&na::Vector3::new(0.0, 0.5, 0.0))
             * na::Matrix4::new_scaling(0.1))
-            .into(),
+        .into(),
         colour: [0.0, 0.5, 0.0],
     });
     cube.insert_visibly(InstanceData {
         modelmatrix: (na::Matrix4::new_translation(&na::Vector3::new(0.5, 0.0, 0.0))
             * na::Matrix4::new_nonuniform_scaling(&na::Vector3::new(0.5, 0.01, 0.01)))
-            .into(),
+        .into(),
         colour: [1.0, 0.5, 0.5],
     });
     cube.insert_visibly(InstanceData {
         modelmatrix: (na::Matrix4::new_translation(&na::Vector3::new(0.0, 0.5, 0.0))
             * na::Matrix4::new_nonuniform_scaling(&na::Vector3::new(0.01, 0.5, 0.01)))
-            .into(),
+        .into(),
         colour: [0.5, 1.0, 0.5],
     });
     cube.insert_visibly(InstanceData {
         modelmatrix: (na::Matrix4::new_translation(&na::Vector3::new(0.0, 0.0, 0.0))
             * na::Matrix4::new_nonuniform_scaling(&na::Vector3::new(0.01, 0.01, 0.5)))
-            .into(),
+        .into(),
         colour: [0.5, 0.5, 1.0],
     });
     cube.update_vertexbuffer(&vk_struct.allocator).unwrap();
@@ -94,7 +94,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     vk_struct.models = vec![cube];
 
     let mut camera = Camera::default();
-
 
     use winit::event::{Event, WindowEvent};
     eventloop.run(move |event, _, controlflow| match event {
@@ -138,7 +137,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
         Event::MainEventsCleared => {
-
             vk_struct.window.request_redraw();
         }
         Event::RedrawRequested(_) => {
